@@ -1,20 +1,19 @@
-const int analog_read_pin = A3;                             // adc pin on arduino nano
-int FREQUENCY = 50;                                         // frequancy of the grid
-int cycles = 1;                                             // number of grid cicles 
-
+const int analog_read_pin = A3;
+int FREQUENCY = 50;
+int cycles = 1;
 
 void setup() {
-  analogReference(EXTERNAL);                                // choosed as Vref from AREF pin (3.3V from LM317)
-  Serial.begin(115200);                                     // open com port with speed
+  analogReference(EXTERNAL);
+  Serial.begin(115200);
   Serial.println("Arduino started");
 }
 
 void loop() {
-      if (Serial.available() > 0) {                          //wait for command from COM port to start measuring
-        char command = Serial.read();                        //wait for a char to com port
-        if (command == 'm') {                                //react on 1 char 'm'
-            float voltage = nplc(cycles);                    //call method "nplc" with argument "cicles"
-            Serial.println(voltage);                         //return the result of "nplc" to the serial port
+      if (Serial.available() > 0) {
+        char command = Serial.read();
+        if (command == 'm') {
+            float voltage = nplc(cycles);
+            Serial.println(voltage);
         }
         else if (command == 'c') {
           String str_cycles = Serial.readStringUntil('\n');
@@ -30,16 +29,16 @@ void loop() {
     }
 }
 
-float nplc(int cycles) {                                     //function for measuring with nplc method, int cicles - argument of the function
-  int samples = 0;                                           //variable for counting number of voltage measurements
-  float sum = 0;                                             //variable for sum of voltages
-  float duration = (1000.0 / FREQUENCY) * cycles;            //find duration of the measurements
+float nplc(int cycles) {
+  int samples = 0;
+  float sum = 0;
+  float duration = (1000.0 / FREQUENCY) * cycles;
   unsigned long start = millis();
 
-  while (millis() - start < duration) {                      //make measurements during duration
-    sum += (analogRead(analog_read_pin) * 3.3 / 1023);       //add samples of voltage to var "sum"
-    samples++;                                               //increase number of samples by 1
+  while (millis() - start < duration) {
+    sum += (analogRead(analog_read_pin) * 3.3 / 1023);
+    samples++;
   }
-  float voltage = sum / samples;                             // variable that represents average voltage based on measurements
-  return voltage;                                            // function returns measured average voltage
+  float voltage = sum / samples;
+  return voltage;
 }
