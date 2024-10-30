@@ -1,0 +1,1 @@
+This project represents the ability of arduino-based boards to measure low voltage (below 5V) with a high accuracy.
